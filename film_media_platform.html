@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>影視傳播賽事資訊平台</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700;900&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --gold:#B8964E;--gold-light:#D4B87A;--gold-dim:rgba(184,150,78,0.18);
+  --ink:#14110E;--ink2:#3A3228;--ink3:#6B5E52;
+  --paper:#F9F6F0;--paper2:#F2ECE2;--paper3:#E8DFD0;
+  --red:#943214;--teal:#0A6060;--blue:#1A4E7A;--purple:#5A3F9A;
+  --border:rgba(184,150,78,0.2);--border2:rgba(184,150,78,0.4);
+  --nav-h:44px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Noto Sans TC',system-ui,sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;overflow-x:hidden;font-size:15px}
+
+/* ── MASTHEAD ── */
+.masthead{background:var(--ink);border-bottom:2px solid var(--gold);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;position:sticky;top:0;z-index:200}
+.logo-main{font-family:'Noto Serif TC',serif;font-size:clamp(20px,4vw,28px);font-weight:900;color:var(--gold);letter-spacing:4px;line-height:1}
+.logo-sub{font-size:clamp(10px,2vw,12px);letter-spacing:2px;color:rgba(184,150,78,0.4);margin-top:3px;font-weight:300}
+.masthead-right{display:flex;align-items:center;gap:10px}
+.live-pill{display:inline-flex;align-items:center;gap:5px;background:var(--red);color:#fff;font-size:12px;font-weight:500;letter-spacing:2px;padding:5px 10px;border-radius:2px}
+.live-dot{width:6px;height:6px;border-radius:50%;background:#fff;animation:blink 1.1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.date-display{font-size:12px;color:rgba(184,150,78,.3);letter-spacing:1px}
+
+/* ── TICKER ── */
+.ticker{background:var(--gold);overflow:hidden;padding:5px 0;white-space:nowrap}
+.ticker-track{display:inline-block;animation:scroll 40s linear infinite}
+@keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.ticker-track span{font-size:13px;font-weight:500;color:var(--ink);padding:0 28px;letter-spacing:.5px}
+.ticker-track span::before{content:'◆';margin-right:8px;opacity:.4}
+
+/* ── NAV ── */
+.nav{background:var(--ink);border-bottom:1px solid rgba(184,150,78,0.12);padding:0 16px;display:flex;gap:0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav a{display:block;padding:15px 18px;font-size:15px;font-weight:500;letter-spacing:.5px;color:rgba(184,150,78,0.45);text-decoration:none;border-bottom:3px solid transparent;white-space:nowrap;transition:color .2s,border-color .2s;cursor:pointer;flex-shrink:0}
+.nav a:hover,.nav a.on{color:var(--gold);border-bottom-color:var(--gold)}
+.nav-divider{width:1px;background:rgba(184,150,78,.15);margin:10px 4px;flex-shrink:0}
+
+/* ── MOBILE SEARCH BAR ── */
+.mobile-search{display:none;background:var(--ink2);padding:10px 16px;border-bottom:1px solid var(--border)}
+.mobile-search-row{display:flex;gap:8px;align-items:center;background:rgba(255,255,255,.06);border:.5px solid rgba(184,150,78,.25);border-radius:4px;padding:8px 12px}
+.mobile-search-row input{flex:1;background:none;border:none;outline:none;color:rgba(255,255,255,.8);font-size:13px;font-family:inherit}
+.mobile-search-row input::placeholder{color:rgba(184,150,78,.3)}
+.mobile-search-row i{color:var(--gold);font-size:16px;cursor:pointer}
+
+/* ── LAYOUT ── */
+.wrap{display:grid;grid-template-columns:1fr 320px;gap:0;max-width:1140px;margin:0 auto}
+.main{border-right:1px solid var(--border);padding:24px 28px 48px 0}
+.main-inner{padding-left:0}
+.side{padding:24px 0 48px 24px}
+
+/* ── SECTION LABELS ── */
+.sec-label{display:inline-block;font-size:11px;font-weight:500;letter-spacing:2px;color:var(--gold);background:var(--paper3);padding:4px 12px;border-left:3px solid var(--gold);margin-bottom:14px}
+.sec-title{font-family:'Noto Serif TC',serif;font-size:18px;font-weight:700;color:var(--ink);letter-spacing:1px;margin-bottom:18px}
+
+/* ── FILTER TABS ── */
+.filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.ftab{font-size:13px;padding:6px 14px;border:.5px solid var(--border2);color:var(--ink3);cursor:pointer;border-radius:2px;letter-spacing:1px;transition:all .2s;background:transparent;font-family:inherit}
+.ftab:hover,.ftab.on{background:var(--gold);color:var(--ink);border-color:var(--gold)}
+
+/* ── CONTEST GRID ── */
+.contest-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:30px}
+.ccard{border:0.5px solid var(--border);background:var(--paper2);padding:16px 18px;cursor:pointer;transition:border-color .2s,transform .2s,box-shadow .2s;position:relative;overflow:hidden}
+.ccard:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 4px 16px rgba(184,150,78,.12)}
+.ccard-bar{position:absolute;top:0;left:0;width:3px;height:100%}
+.ccard-status{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:500;letter-spacing:1.5px;padding:3px 10px;border-radius:2px;margin-bottom:9px}
+.st-open{background:rgba(10,96,96,0.12);color:var(--teal)}
+.st-soon{background:rgba(148,50,20,0.1);color:var(--red)}
+.st-announced{background:rgba(184,150,78,0.15);color:#7A5E20}
+.st-done{background:rgba(100,100,100,0.1);color:#888}
+.st-dot{width:5px;height:5px;border-radius:50%;background:currentColor}
+.ccard-name{font-family:'Noto Serif TC',serif;font-size:16px;font-weight:700;color:var(--ink);margin-bottom:6px;letter-spacing:.5px;line-height:1.4}
+.ccard-desc{font-size:13px;color:var(--ink3);line-height:1.8;margin-bottom:12px}
+.ccard-footer{display:flex;align-items:center;justify-content:space-between;font-size:12px;flex-wrap:wrap;gap:4px}
+.ccard-date{color:var(--ink3);display:flex;align-items:center;gap:4px}
+.ccard-prize{font-weight:500;color:#7A5E20}
+.ccard-link{display:inline-flex;align-items:center;gap:3px;color:var(--gold);font-size:12px;letter-spacing:1px;text-decoration:none;margin-top:8px;transition:opacity .2s}
+.ccard-link:hover{opacity:.7}
+.ccard-tag{display:inline-block;font-size:11px;letter-spacing:1px;background:var(--paper3);color:var(--ink3);padding:3px 8px;margin-right:4px;margin-top:4px;border-radius:1px}
+
+/* ── NEWS ── */
+.news-item{display:grid;grid-template-columns:52px 1fr;gap:14px;padding:14px 0;border-bottom:.5px solid var(--border);align-items:start;cursor:pointer;transition:background .2s}
+.news-item:hover{background:rgba(184,150,78,.03)}
+.news-num{font-family:'Noto Serif TC',serif;font-size:28px;font-weight:900;color:var(--border2);line-height:1;text-align:right;padding-top:2px}
+.news-cat{font-size:11px;font-weight:500;letter-spacing:1.5px;margin-bottom:4px}
+.news-title{font-family:'Noto Serif TC',serif;font-size:15px;font-weight:700;color:var(--ink);line-height:1.7;margin-bottom:6px;transition:color .2s}
+.news-item:hover .news-title{color:var(--gold)}
+.news-meta{font-size:12px;color:var(--ink3);display:flex;gap:8px;flex-wrap:wrap}
+
+/* ── SIDE ── */
+.side-label{font-size:11px;font-weight:500;letter-spacing:2px;color:var(--gold);padding-bottom:10px;border-bottom:.5px solid var(--border);margin-bottom:14px}
+.side-block{margin-bottom:26px}
+
+/* ── COUNTDOWN ── */
+.cd-card{background:var(--ink);padding:20px;margin-bottom:8px}
+.cd-name{font-family:'Noto Serif TC',serif;font-size:17px;font-weight:900;color:var(--gold);margin-bottom:2px;letter-spacing:1.5px}
+.cd-sub{font-size:11px;color:rgba(184,150,78,.35);letter-spacing:2px;margin-bottom:12px}
+.cd-nums{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:10px}
+.cd-unit{text-align:center;background:rgba(255,255,255,.04);padding:8px 2px 6px;border:.5px solid rgba(184,150,78,.1)}
+.cd-n{font-family:'Noto Serif TC',serif;font-size:22px;font-weight:900;color:#fff;line-height:1;display:block}
+.cd-l{font-size:10px;color:rgba(184,150,78,.35);letter-spacing:1px;display:block;margin-top:3px}
+.cd-phase{font-size:11px;color:var(--gold);letter-spacing:1.5px;border-left:2px solid var(--gold);padding-left:7px}
+
+/* ── EVENTS ── */
+.ev-item{display:flex;gap:10px;padding:11px 0;border-bottom:.5px solid var(--border);cursor:pointer;transition:background .15s}
+.ev-item:hover{background:rgba(184,150,78,.04)}
+.ev-date{flex-shrink:0;width:44px;text-align:center;background:var(--paper3);padding:6px 3px;border-top:2px solid var(--gold)}
+.ev-m{font-size:10px;font-weight:500;color:var(--gold);letter-spacing:1px;display:block}
+.ev-d{font-family:'Noto Serif TC',serif;font-size:18px;font-weight:900;color:var(--ink);line-height:1.1;display:block}
+.ev-info{flex:1}
+.ev-title{font-size:14px;font-weight:500;color:var(--ink);line-height:1.5;margin-bottom:3px}
+.ev-tag{font-size:12px;color:var(--ink3)}
+
+/* ── AI ASSISTANT ── */
+.ai-panel{background:var(--ink);border:1px solid rgba(184,150,78,0.25);overflow:hidden;border-radius:2px}
+.ai-header{display:flex;align-items:center;gap:10px;padding:13px 16px;border-bottom:1px solid rgba(184,150,78,0.15)}
+.ai-avatar{width:32px;height:32px;border-radius:50%;background:var(--gold-dim);border:1px solid rgba(184,150,78,.4);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ai-avatar-icon{font-size:16px;color:var(--gold)}
+.ai-hinfo{flex:1}
+.ai-hname{font-size:14px;font-weight:500;color:var(--gold);letter-spacing:1px}
+.ai-hsub{font-size:11px;color:rgba(184,150,78,.4);letter-spacing:1px}
+.ai-status{display:flex;align-items:center;gap:5px;font-size:11px;color:#4ADE80;letter-spacing:1px}
+.ai-status-dot{width:6px;height:6px;border-radius:50%;background:#4ADE80;animation:blink 2s infinite}
+.ai-search-badge{font-size:10px;padding:2px 7px;background:rgba(74,222,128,.1);color:#4ADE80;border:.5px solid rgba(74,222,128,.3);letter-spacing:1px;border-radius:2px;margin-left:6px}
+
+.ai-msgs{padding:12px 14px;min-height:180px;max-height:300px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
+.ai-msgs::-webkit-scrollbar{width:3px}
+.ai-msgs::-webkit-scrollbar-track{background:transparent}
+.ai-msgs::-webkit-scrollbar-thumb{background:rgba(184,150,78,.25);border-radius:2px}
+
+.msg{display:flex;gap:8px;align-items:flex-start}
+.msg.user{flex-direction:row-reverse}
+.msg-bubble{max-width:88%;padding:10px 13px;font-size:13.5px;line-height:1.8;border-radius:2px}
+.msg.ai .msg-bubble{background:rgba(255,255,255,.06);color:rgba(255,255,255,.85);border:.5px solid rgba(184,150,78,.15)}
+.msg.user .msg-bubble{background:var(--gold-dim);color:var(--gold-light);border:.5px solid rgba(184,150,78,.3)}
+.msg-ico{width:24px;height:24px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px}
+.msg.ai .msg-ico{background:rgba(184,150,78,.15);color:var(--gold)}
+.msg.user .msg-ico{background:rgba(184,150,78,.2);color:var(--gold)}
+.msg-search-note{font-size:9px;color:rgba(74,222,128,.6);display:flex;align-items:center;gap:4px;margin-top:5px;letter-spacing:.5px}
+
+.typing{display:flex;gap:4px;align-items:center;padding:4px 0}
+.typing span{width:5px;height:5px;border-radius:50%;background:rgba(184,150,78,.4);display:inline-block}
+.typing span:nth-child(1){animation:bounce .8s infinite}
+.typing span:nth-child(2){animation:bounce .8s .15s infinite}
+.typing span:nth-child(3){animation:bounce .8s .3s infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+
+.ai-chips{padding:0 14px 10px;display:flex;flex-wrap:wrap;gap:5px}
+.chip{font-size:12px;color:rgba(184,150,78,.6);border:.5px solid rgba(184,150,78,.25);padding:5px 11px;cursor:pointer;letter-spacing:.5px;transition:all .2s;border-radius:2px;background:transparent;font-family:inherit}
+.chip:hover{background:rgba(184,150,78,.1);color:var(--gold);border-color:rgba(184,150,78,.5)}
+
+.ai-input-row{display:flex;gap:8px;border-top:.5px solid rgba(184,150,78,.15);padding:10px 14px}
+.ai-input{flex:1;background:rgba(255,255,255,.05);border:.5px solid rgba(184,150,78,.2);color:rgba(255,255,255,.85);font-size:13px;padding:9px 12px;font-family:inherit;outline:none;transition:border-color .2s;border-radius:2px;min-width:0}
+.ai-input::placeholder{color:rgba(184,150,78,.3)}
+.ai-input:focus{border-color:rgba(184,150,78,.5)}
+.ai-send{background:var(--gold);border:none;color:var(--ink);padding:8px 13px;cursor:pointer;font-size:14px;transition:opacity .2s;border-radius:2px;flex-shrink:0}
+.ai-send:hover{opacity:.85}
+.ai-send:disabled{opacity:.4;cursor:not-allowed}
+.ai-search-toggle{display:flex;align-items:center;gap:6px;padding:7px 14px;border-top:.5px solid rgba(184,150,78,.08);font-size:11px;color:rgba(184,150,78,.5);letter-spacing:.5px;cursor:pointer;transition:background .2s}
+.ai-search-toggle:hover{background:rgba(184,150,78,.05)}
+.ai-search-toggle input[type=checkbox]{accent-color:var(--gold);width:12px;height:12px}
+
+/* ── CATEGORY COLORS ── */
+.cat-film{color:var(--red)}
+.cat-tv{color:var(--blue)}
+.cat-photo{color:var(--teal)}
+.cat-doc{color:var(--purple)}
+.cat-music{color:#c0572a}
+.cat-radio{color:#2a7a8a}
+
+/* ── STATS ── */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.stat-box{background:var(--paper3);padding:11px;text-align:center}
+.stat-n{font-family:'Noto Serif TC',serif;font-size:26px;font-weight:900;color:var(--ink)}
+.stat-l{font-size:11px;color:var(--ink3);letter-spacing:1px;margin-top:3px}
+
+/* ── MOBILE FAB ── */
+.fab-ai{display:none;position:fixed;bottom:20px;right:20px;z-index:300;width:52px;height:52px;border-radius:50%;background:var(--gold);border:none;color:var(--ink);font-size:22px;cursor:pointer;box-shadow:0 4px 20px rgba(184,150,78,.4);align-items:center;justify-content:center;transition:transform .2s}
+.fab-ai:hover{transform:scale(1.08)}
+
+/* ── MOBILE AI DRAWER ── */
+.ai-drawer{display:none;position:fixed;bottom:0;left:0;right:0;z-index:400;background:var(--ink);border-top:2px solid var(--gold);transform:translateY(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);max-height:85vh;overflow:hidden;flex-direction:column}
+.ai-drawer.open{transform:translateY(0)}
+.drawer-drag{width:36px;height:4px;background:rgba(184,150,78,.3);border-radius:2px;margin:10px auto 0}
+.ai-drawer .ai-msgs{max-height:45vh}
+
+/* ── MOBILE BOTTOM NAV ── */
+.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--ink);border-top:1px solid rgba(184,150,78,.2);padding:8px 0 env(safe-area-inset-bottom);z-index:250}
+.bottom-nav-inner{display:flex;justify-content:space-around;align-items:center}
+.bnav-item{display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 8px;color:rgba(184,150,78,.4);cursor:pointer;font-size:10px;letter-spacing:1px;transition:color .2s;min-width:52px}
+.bnav-item.on,.bnav-item:hover{color:var(--gold)}
+.bnav-item i{font-size:22px}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .wrap{grid-template-columns:1fr}
+  .main{border-right:none;padding:16px 16px 80px}
+  .side{display:none;padding:0}
+  .mobile-search{display:block}
+  .date-display{display:none}
+  .fab-ai{display:flex}
+  .ai-drawer{display:flex}
+  .bottom-nav{display:block}
+  .contest-grid{grid-template-columns:1fr}
+  .ccard{padding:14px 16px}
+  .ccard-name{font-size:15px}
+  .masthead{padding:10px 14px}
+  .nav{padding:0 10px}
+  .nav a{padding:12px 13px;font-size:13px}
+  .sec-label{margin-bottom:10px;font-size:12px}
+  .sec-title{font-size:16px;margin-bottom:12px}
+  .filter-row{gap:5px}
+  .ftab{font-size:12px;padding:5px 10px}
+  body{padding-bottom:60px}
+}
+@media(max-width:400px){
+  .logo-main{letter-spacing:2px;font-size:15px}
+  .contest-grid{gap:8px}
+}
+
+/* ── EVENTS AI LOADING ── */
+.ev-loading{display:flex;align-items:center;gap:6px;color:var(--ink3);font-size:13px;padding:20px 0}
+.ev-loading span{width:7px;height:7px;border-radius:50%;background:var(--gold);opacity:.4;display:inline-block;animation:bounce .8s infinite}
+.ev-loading span:nth-child(2){animation-delay:.15s}
+.ev-loading span:nth-child(3){animation-delay:.3s}
+.ev-error{color:var(--red);font-size:13px;padding:16px 0;line-height:1.7}
+
+/* ── AI EVENT CARDS ── */
+.aiev-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.aiev-card{background:var(--paper2);border:.5px solid var(--border);padding:18px;position:relative;overflow:hidden;transition:border-color .2s,box-shadow .2s}
+.aiev-card:hover{border-color:var(--gold);box-shadow:0 3px 14px rgba(184,150,78,.12)}
+.aiev-card-bar{position:absolute;top:0;left:0;width:3px;height:100%}
+.aiev-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:500;letter-spacing:1px;padding:3px 9px;border-radius:2px;margin-bottom:8px}
+.aiev-badge.tw{background:rgba(10,96,96,.12);color:var(--teal)}
+.aiev-badge.intl{background:rgba(26,78,122,.12);color:var(--blue)}
+.aiev-title{font-family:'Noto Serif TC',serif;font-size:15px;font-weight:700;color:var(--ink);line-height:1.5;margin-bottom:6px}
+.aiev-desc{font-size:12.5px;color:var(--ink3);line-height:1.75;margin-bottom:10px}
+.aiev-footer{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;font-size:12px}
+.aiev-date{color:var(--ink3);display:flex;align-items:center;gap:4px}
+.aiev-loc{color:var(--ink3);display:flex;align-items:center;gap:4px}
+.aiev-src{font-size:11px;color:rgba(184,150,78,.5);margin-top:6px;letter-spacing:.5px}
+@media(max-width:768px){.aiev-grid{grid-template-columns:1fr}}
+
+/* ── EVENTS MAIN GRID (fallback) ── */
+.events-main-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px}
+.emain-item{display:flex;gap:14px;padding:16px;background:var(--paper2);border:.5px solid var(--border);transition:border-color .2s,box-shadow .2s;cursor:pointer}
+.emain-item:hover{border-color:var(--gold);box-shadow:0 3px 12px rgba(184,150,78,.1)}
+.emain-date{flex-shrink:0;width:50px;text-align:center;background:var(--ink);padding:8px 4px;border-top:2px solid var(--gold)}
+.emain-m{font-size:10px;font-weight:500;color:var(--gold);letter-spacing:1px;display:block}
+.emain-d{font-family:'Noto Serif TC',serif;font-size:17px;font-weight:900;color:#fff;line-height:1.1;display:block;margin:2px 0}
+.emain-y{font-size:9px;color:rgba(184,150,78,.4);display:block;letter-spacing:.5px}
+.emain-body{flex:1}
+.emain-title{font-family:'Noto Serif TC',serif;font-size:14px;font-weight:700;color:var(--ink);line-height:1.5;margin-bottom:5px}
+.emain-desc{font-size:12px;color:var(--ink3);line-height:1.7;margin-bottom:6px}
+.emain-loc{font-size:11px;color:var(--ink3);display:flex;align-items:center;gap:4px;opacity:.7}
+@media(max-width:768px){.events-main-grid{grid-template-columns:1fr}}
+
+/* ── SEARCH HIGHLIGHT ── */
+.search-pulse{animation:spulse .6s ease}
+@keyframes spulse{0%{opacity:.3}50%{opacity:1}100%{opacity:.3}}
+</style>
+</head>
+<body>
+
+<h2 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">台灣影視傳播賽事資訊平台，含 AI 即時搜尋助手</h2>
+
+<!-- MASTHEAD -->
+<div class="masthead">
+  <div>
+    <div class="logo-main">影視傳播賽事資訊</div>
+    <div class="logo-sub">TAIWAN FILM · MEDIA · BROADCASTING AWARDS</div>
+  </div>
+  <div class="masthead-right">
+    <div class="live-pill"><span class="live-dot"></span>LIVE</div>
+    <div class="date-display" id="now"></div>
+  </div>
+</div>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-track" id="ticker-track">
+    <span>第63屆金馬獎 · 短片報名預計2026年6月開放</span>
+    <span>第28屆台北電影獎入圍名單5月15日公布 《大濛》13項領先</span>
+    <span>第61屆金鐘獎 · 2026年秋季預計舉辦</span>
+    <span>2026高雄電影節國際短片&amp;XR競賽即將開放報名</span>
+    <span>賞金獵人攝影比賽 · 多項競賽持續開放中</span>
+    <span>第48屆金穗獎 · 動畫片《落雺》勇奪金穗大獎</span>
+    <span>TIDF台灣國際紀錄片影展 · 2026年5月開幕</span>
+    <span>金音創作獎 · 2026年度報名資訊更新中</span>
+    <span>第63屆金馬獎 · 短片報名預計2026年6月開放</span>
+    <span>第28屆台北電影獎入圍名單5月15日公布 《大濛》13項領先</span>
+    <span>第61屆金鐘獎 · 2026年秋季預計舉辦</span>
+    <span>2026高雄電影節國際短片&amp;XR競賽即將開放報名</span>
+    <span>賞金獵人攝影比賽 · 多項競賽持續開放中</span>
+    <span>第48屆金穗獎 · 動畫片《落雺》勇奪金穗大獎</span>
+    <span>TIDF台灣國際紀錄片影展 · 2026年5月開幕</span>
+    <span>金音創作獎 · 2026年度報名資訊更新中</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav">
+  <a class="on" data-view="contests" data-sec="all" onclick="switchView('contests','all',this)">🎬 全部比賽</a>
+  <a data-view="contests" data-sec="film" onclick="switchView('contests','film',this)">電影</a>
+  <a data-view="contests" data-sec="tv" onclick="switchView('contests','tv',this)">廣播電視</a>
+  <a data-view="contests" data-sec="photo" onclick="switchView('contests','photo',this)">攝影</a>
+  <a data-view="contests" data-sec="music" onclick="switchView('contests','music',this)">音樂</a>
+  <a data-view="contests" data-sec="doc" onclick="switchView('contests','doc',this)">紀錄片</a>
+  <a data-view="contests" data-sec="short" onclick="switchView('contests','short',this)">短片</a>
+  <div class="nav-divider"></div>
+  <a data-view="events" data-sec="events" onclick="switchView('events','events',this)" style="color:rgba(184,150,78,0.45)">📅 近期活動</a>
+  <a data-view="news" data-sec="news" onclick="switchView('news','news',this)" style="color:rgba(184,150,78,0.45)">📰 最新消息</a>
+</div>
+
+<!-- MOBILE SEARCH -->
+<div class="mobile-search">
+  <div class="mobile-search-row">
+    <i class="ti ti-search"></i>
+    <input id="msearch" placeholder="想查哪個賽事？截止日期？報名資格？" onkeydown="if(event.key==='Enter')mobileSearch()">
+    <i class="ti ti-send" onclick="mobileSearch()" style="cursor:pointer"></i>
+  </div>
+</div>
+
+<!-- MAIN WRAP -->
+<div class="wrap">
+  <div class="main">
+    <div class="main-inner">
+
+      <!-- VIEW: CONTESTS -->
+      <div id="view-contests" style="padding-top:20px">
+        <div class="sec-label">CONTESTS · 賽事總覽</div>
+        <div class="sec-title">🎬 開放報名 ／ 近期重要賽事</div>
+
+        <div class="filter-row" id="filter-row">
+          <button class="ftab on" data-cat="all" onclick="filterCards(this,'all')">全部</button>
+          <button class="ftab" data-cat="film" onclick="filterCards(this,'film')">電影</button>
+          <button class="ftab" data-cat="tv" onclick="filterCards(this,'tv')">廣電</button>
+          <button class="ftab" data-cat="photo" onclick="filterCards(this,'photo')">攝影</button>
+          <button class="ftab" data-cat="music" onclick="filterCards(this,'music')">音樂</button>
+          <button class="ftab" data-cat="doc" onclick="filterCards(this,'doc')">紀錄片</button>
+          <button class="ftab" data-cat="short" onclick="filterCards(this,'short')">短片</button>
+        </div>
+
+        <div class="contest-grid" id="contest-grid">
+
+          <!-- FILM -->
+          <div class="ccard" data-cat="film">
+            <div class="ccard-bar" style="background:#B8964E"></div>
+            <div style="padding-left:10px">
+              <div class="ccard-status st-announced"><span class="st-dot"></span>入圍公告</div>
+              <div class="ccard-name">第28屆台北電影獎</div>
+              <div class="ccard-desc">百萬首獎最高榮譽，入圍名單5月15日公布，《大濛》13項領先。新增「原創電影歌曲獎」共21項正式獎。</div>
+              <div style="margin-bottom:6px"><span class="ccard-tag">電影</span><span class="ccard-tag">短片</span><span class="ccard-tag">紀錄片</span></div>
+              <div class="ccard-footer">
+                <div class="ccard-date"><i class="ti ti-calendar" style="font-size:12px"></i>影展 06/26–07/07</div>
+                <div class="ccard-prize">百萬首獎</div>
+              </div>
+              <a class="ccard-link" href="https://www.taipeiff.taipei/" target="_blank" rel="noopener">官方網站 <i class="ti ti-external-link" style="font-size:11px"></i></a>
+            </div>
+          </div>
+
+          <div class="ccard" data-cat="film">
+            <div class="ccard-bar" style="background:#943214"></div>
+            <div style="padding-left:10px">
+              <div class="ccard-status st-open"><span class="st-dot"></span>即將開放</div>
+              <div class="ccard-name">第63屆金馬獎</div>
+              <div class="ccard-desc">華語電影最高殊榮，接受全球華語電影報名，設24項正式獎。短片類預計2026年6月開放報名，長片7月。</div>
+              <div style="margin-bottom:6px"><span class="ccard-tag">電影</span><span class="ccard-tag">短片</span><span class="ccard-tag">動畫</span></div>
+              <div class="ccard-footer">
+                <div class="ccard-date"><i class="ti ti-calendar" style="font-size:12px"></i>典禮 11/22（預計）</div>
+                <div class="ccard-prize">24類獎項</div>
+              </div>
+              <a class="ccard-link" href="https://www.goldenhorse.org.tw" target="_blank" rel="noopener">官方網站 <i class="ti ti-external-link" style="font-size:11px"></i></a>
+            </div>
+          </div>
+
+          <div class="ccard" data-cat="film">
+            <div class="ccard-bar" style="background:#0A6060"></div>
+            <div style="padding-left:10px">
+              <div class="ccard-status st-done"><span class="st-dot"></span>已結束</div>
+              <div class="ccard-name">第48屆金穗獎</div>
+              <div class="ccard-desc">1978年創辦，台灣最重要新銳影像競賽，鼓勵獨立創作。2026影展已於4/24–5/1在華山光點舉辦完畢。</div>
+              <div style="margin-bottom:6px"><span class="ccard-tag">短片</span><span class="ccard-tag">新銳</span><span class="ccard-tag">學生</span></div>
+              <div class="ccard-footer">
+                <div class="ccard-date"><i class="ti ti-calendar" style="font-size:12px"></i>影展 04/24–05/01</div>
+                <div class="ccard-prize">新銳創作</div>
+              </div>
+              <a class="ccard-link" href="https://ghsa.org.tw" target="_blank" rel="noopener">官方網站 <i class="ti ti-external-link" style="font-size:11px"></i></a>
+            </div>
+          </div>
+
+          <div class="ccard" data-cat="film doc">
+            <div class="ccard-bar" style="background:#5A3F9A"></div>
+            <div style="padding-left:10px">
+              <div class="ccard-status st-open"><span class="st-dot"></span>報名延長</div>
+              <div class="ccard-name">第23屆南方影展競賽</div>
+              <div class="ccard-desc">全球華人影片競賽，不限華人導演，凡華人相關題材均可投件。成品需2024年1月後完成。</div>
+              <div style="margin-bottom:6px"><span class="ccard-tag">電影</span><span class="ccard-tag">紀錄片</span><span class="ccard-tag">短片</span></div>
+              <div class="ccard-footer">
+                <div class="ccard-date"><i class="ti ti-calendar" style="font-size:12px"></i>截止 2026/05/11</div>
+                <div class="ccard-prize">全球華人</div>
+              </div>
+              <a class="ccard-link" href="https://www.southfilm.tw" target="_blank" rel="noopener">官方網站 <i class="ti ti-external-link" style="font-size:11px"></i></a>
+            </div>
+          </div>
+
+          <div class="ccard" data-cat="short film">
+            <div class="ccard-bar" style="background:#1A4E7A"></div>
+            <div style="padding-left:10px">
+              <div class="ccard-status st-soon"><span class="st-dot"></span>即將開放</div>
+              <div class="ccard-name">2026高雄電影節 短片&amp;XR</div>
+              <div class="ccard-desc">台灣唯一涵蓋短片、XR虛擬實境競賽的影展，設台灣組、國際組、亞洲新浪潮獎，每年10月舉辦。</div>
+              <div style="margin-bottom:6px"><span class="ccard-tag">短片</span><span class="ccard-tag">XR</span><span class="ccard-tag">VR</span></div>
+              <div class="ccard-footer">
+                <div class="ccard-date"><i class="ti ti-calendar" style="font-size:12px"></i>影展 每年10月</div>
+                <div class="ccard-prize">短片&amp;XR</div>
+              </div>
+              <a class="ccard-link" href="https://www.kff.tw" target="_blank" rel="noopener">官方網站 <i class="ti ti-external-link" style="font-size:11px"></i></a>
+            </div>
+          </div>
+
+          <!-- TV / BROADCASTING -->
+          <div class="ccard" data-cat="tv">
+            <div class="ccard-bar" style="background:#B8964E"></div>
+            <div style="padding-left:10px">
+              <div class="ccard-status st-done"><span class="st-dot"></span>已結束</div>
+              <div class="ccard-name">第60屆金鐘獎</div>
+              <div class="ccard-desc">台灣廣播電視最高榮譽。廣播類10/11、節目類10/17、戲劇類10/18典禮，均在台北流行音樂中心舉辦。</div>
+              <div style="margin-bottom:6px"><span class="ccard-tag">電視</span><span class="ccard-tag">廣播</span><span class="ccard-tag">戲劇</span></div>
+              <div class="ccard-footer">
+                <div class="ccard-date"><i class="ti ti-calendar" style="font-size:12px"></i>典禮 2025/10</div>
+                <div class="ccard-prize">廣播電視</div>
+              </div>
+              <a class="ccard-link" href="https://gba.tavis.tw" target="_blank" rel="noopener">官方網站 <i class="ti ti-external-link" style="font-size:11px"></i></a>
+            </div>
+          </div>
+
+          <div class="ccard" data-cat="tv">
+            <div class="ccard-bar" style="background:#2a7a8a"></div>
+            <div style="padding-left:10px">
+              <div class="ccard-status st-open"><span class="st-dot"></span>即將開放</div>
+              <div class="ccard-name">第61屆金鐘獎</div>
+              <div class="ccard-desc">文化部影視及流行音樂產業局主辦，2026年秋季預計舉辦，分廣播、節目、戲劇三類典禮，為廣電最高榮譽。</div>
+              <div style="margin-bottom:6px"><span class="ccard-tag">電視</span><span class="ccard-tag">廣播</span><span class="ccard-tag">OTT</span></div>
+              <div class="ccard-footer">
+                <div class="ccard-date"><i class="ti ti-calendar" style="font-size:12px"></i>2026年秋季（預計）</div>
+                <div class="ccard-prize">廣電三類</div>
+              </div>
+              <a class="ccard-link" href="https://gba.tavis.tw" target="_blank" rel="noopener">官方網站 <i class="ti ti-external-link" style="font-size:11px"></i></a>
+            </div>
+          </div>
+
+
+          <div class="ccard" data-cat="tv">
+            <div class="ccard-bar" style="background:#c0572a"></div>
+            <div style="padding-left:10px">
+              <div class="ccard-status st-open"><span class="st-dot"></span>常年</div>
+              <div class="ccard-name">卓越新聞獎</div>
+              <div class="ccard-desc">卓越新聞獎基金會主辦，涵蓋平面、廣電、網路新聞多類，鼓勵優質新聞報導，設國際報導、調查報導等獎項。</div>
+              <div style="margin-bottom:6px"><span class="ccard-tag">新聞</span><span class="ccard-tag">廣電</span><span class="ccard-tag">調查報導</span></div>
+              <div class="ccard-footer">
+                <div class="ccard-date"><i class="ti ti-calendar" style="font-size:12px"></i>年度評審</div>
+                <div class="ccard-prize">新聞卓越</div>
+              </div>
+              <a class="ccard-link" href="https://www.feja.org.tw" target="_blank" rel="noopener">官方網站 <i class="ti ti-external-link" style="font-size:11px"></i></a>
+            </div>
+          </div>
+
+          <!-- PHOTO -->
+          <div class="ccard" data-cat="photo">
+            <div class="ccard-bar" style="background:#0A6060"></div>
+            <div style="padding-left:10px">
+              <div class="ccard-status st-open"><span class="st-dot"></span>常年開放</div>
+              <div class="ccard-name">賞金獵人攝影比賽</div>
+              <div class="ccard-desc">台灣最大型攝影競賽平台，彙整各類攝影賽事資訊，涵蓋風景、人像、商業、紀實等多元類別，獎金豐厚。</div>
+              <div style="margin-bottom:6px"><span class="ccard-tag">攝影</span><span class="ccard-tag">人像</span><span class="ccard-tag">風景</span><span class="ccard-tag">紀實</span></div>
+              <div class="ccard-footer">
+                <div class="ccard-date"><i class="ti ti-calendar" style="font-size:12px"></i>常態競賽</div>
+                <div class="ccard-prize">多項獎金</div>
+              </div>
+              <a class="ccard-link" href="https://photoawards.tw" target="_blank" rel="noopener">官方網站 <i class="ti ti-external-link" style="font-size:11px"></i></a>
+            </div>
+          </div>
+
+          <div class="ccard" data-cat="photo">
+            <div class="ccard-bar" style="background:#B8964E"></div>
+            <div style="padding-left:10px">
+              <div class="ccard-status st-open"><span class="st-dot"></span>開放中</div>
+              <div class="ccard-name">台灣攝影獎</div>
+              <div class="ccard-desc">國家文化藝術基金會與台灣攝影學會合辦，鼓勵台灣攝影創作，設紀實攝影、藝術攝影、商業攝影等類別。</div>
+              <div style="margin-bottom:6px"><span class="ccard-tag">攝影</span><span class="ccard-tag">藝術</span><span class="ccard-tag">紀實</span></div>
+              <div class="ccard-footer">
+                <div class="ccard-date"><i class="ti ti-calendar" style="font-size:12px"></i>年度競賽</div>
+                <div class="ccard-prize">攝影藝術</div>
+              </div>
+              <a class="ccard-link" href="https://www.ps.org.tw" target="_blank" rel="noopener">攝影學會 <i class="ti ti-external-link" style="font-size:11px"></i></a>
+            </div>
+          </div>
+
+          <div class="ccard" data-cat="photo film">
+            <div class="ccard-bar" style="background:#943214"></div>
+            <div style="padding-left:10px">
+              <div class="ccard-status st-open"><span class="st-dot"></span>開放中</div>
+              <div class="ccard-name">新聞攝影大賽</div>
+              <div class="ccard-desc">中華民國新聞攝影協會主辦，台灣最具公信力的新聞攝影競賽，分新聞攝影、特寫人物、文化藝術等類別。</div>
+              <div style="margin-bottom:6px"><span class="ccard-tag">新聞攝影</span><span class="ccard-tag">紀實</span></div>
+              <div class="ccard-footer">
+                <div class="ccard-date"><i class="ti ti-calendar" style="font-size:12px"></i>年度評選</div>
+                <div class="ccard-prize">新聞攝影</div>
+              </div>
+              <a class="ccard-link" href="https://www.npat.org.tw" target="_blank" rel="noopener">官方網站 <i class="ti ti-external-link" style="font-size:11px"></i></a>
+            </div>
+          </div>
+
+          <!-- MUSIC -->
+          <div class="ccard" data-cat="music">
+            <div class="ccard-bar" style="background:#c0572a"></div>
+            <div style="padding-left:10px">
+              <div class="ccard-status st-open"><span class="st-dot"></span>年度開放</div>
+              <div class="ccard-name">金音創作獎</div>
+              <div class="ccard-desc">文化部影視及流行音樂產業局主辦，鼓勵台灣獨立音樂創作，設最佳專輯、最佳歌曲、最佳演奏等多類獎項。</div>
+              <div style="margin-bottom:6px"><span class="ccard-tag">獨立音樂</span><span class="ccard-tag">創作</span><span class="ccard-tag">專輯</span></div>
+              <div class="ccard-footer">
+                <div class="ccard-date"><i class="ti ti-calendar" style="font-size:12px"></i>年度評選</div>
+                <div class="ccard-prize">獨立音樂</div>
+              </div>
+              <a class="ccard-link" href="https://www.bamid.gov.tw" target="_blank" rel="noopener">主管機關 <i class="ti ti-external-link" style="font-size:11px"></i></a>
+            </div>
+          </div>
+
+          <div class="ccard" data-cat="music tv">
+            <div class="ccard-bar" style="background:#5A3F9A"></div>
+            <div style="padding-left:10px">
+              <div class="ccard-status st-open"><span class="st-dot"></span>年度開放</div>
+              <div class="ccard-name">金曲獎</div>
+              <div class="ccard-desc">台灣流行音樂最高殊榮，文化部主辦，設國語、台語、客語、原住民語、演奏類多語別獎項，每年6月舉行頒獎典禮。</div>
+              <div style="margin-bottom:6px"><span class="ccard-tag">流行音樂</span><span class="ccard-tag">台語</span><span class="ccard-tag">原住民語</span></div>
+              <div class="ccard-footer">
+                <div class="ccard-date"><i class="ti ti-calendar" style="font-size:12px"></i>每年6月典禮</div>
+                <div class="ccard-prize">流行音樂</div>
+              </div>
+              <a class="ccard-link" href="https://www.bamid.gov.tw" target="_blank" rel="noopener">主管機關 <i class="ti ti-external-link" style="font-size:11px"></i></a>
+            </div>
+          </div>
+
+          <!-- DOCUMENTARY -->
+          <div class="ccard" data-cat="doc">
+            <div class="ccard-bar" style="background:#5A3F9A"></div>
+            <div style="padding-left:10px">
+              <div class="ccard-status st-open"><span class="st-dot"></span>進行中</div>
+              <div class="ccard-name">TIDF台灣國際紀錄片影展</div>
+              <div class="ccard-desc">兩年一度，亞洲最重要紀錄片影展之一，設台灣競賽、國際競賽、亞洲視野競賽，每次吸引逾百國作品投件。</div>
+              <div style="margin-bottom:6px"><span class="ccard-tag">紀錄片</span><span class="ccard-tag">國際</span><span class="ccard-tag">兩年一次</span></div>
+              <div class="ccard-footer">
+                <div class="ccard-date"><i class="ti ti-calendar" style="font-size:12px"></i>2026年5月</div>
+                <div class="ccard-prize">國際競賽</div>
+              </div>
+              <a class="ccard-link" href="https://www.tidf.org.tw" target="_blank" rel="noopener">官方網站 <i class="ti ti-external-link" style="font-size:11px"></i></a>
+            </div>
+          </div>
+
+          <div class="ccard" data-cat="doc short">
+            <div class="ccard-bar" style="background:#1A4E7A"></div>
+            <div style="padding-left:10px">
+              <div class="ccard-status st-open"><span class="st-dot"></span>常年開放</div>
+              <div class="ccard-name">客家影視音徵選</div>
+              <div class="ccard-desc">客家委員會主辦，徵選優質客語電影、電視節目、廣播節目及音樂作品，推廣客家語言文化，設多項類別。</div>
+              <div style="margin-bottom:6px"><span class="ccard-tag">客語</span><span class="ccard-tag">廣電</span><span class="ccard-tag">音樂</span></div>
+              <div class="ccard-footer">
+                <div class="ccard-date"><i class="ti ti-calendar" style="font-size:12px"></i>年度計畫</div>
+                <div class="ccard-prize">客家文化</div>
+              </div>
+              <a class="ccard-link" href="https://www.hakka.gov.tw" target="_blank" rel="noopener">客委會 <i class="ti ti-external-link" style="font-size:11px"></i></a>
+            </div>
+          </div>
+
+        </div><!-- /contest-grid -->
+
+      </div><!-- /view-contests -->
+
+      <!-- VIEW: EVENTS (AI 自動搜索) -->
+      <div id="view-events" style="display:none;padding-top:20px">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:6px">
+          <div>
+            <div class="sec-label">EVENTS · 近期活動</div>
+            <div class="sec-title" style="margin-bottom:0">📅 影視傳播活動即時搜索</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">
+              <div id="ev-last-update" style="font-size:11px;color:var(--ink3)">搜索中…</div>
+              <div id="ev-next-update" style="font-size:10px;color:rgba(184,150,78,.35);letter-spacing:.5px"></div>
+            </div>
+            <button id="ev-refresh-btn" onclick="fetchEvents(true)" style="display:inline-flex;align-items:center;gap:6px;background:var(--gold);border:none;color:var(--ink);padding:8px 16px;font-size:13px;font-weight:500;cursor:pointer;border-radius:2px;font-family:inherit;transition:opacity .2s">
+              <i class="ti ti-refresh"></i> 即時重新搜尋
+            </button>
+          </div>
+        </div>
+        <p style="font-size:12px;color:var(--ink3);margin-bottom:20px;line-height:1.7">由 AI 即時搜索最新影視、廣電、攝影、音樂活動資訊，涵蓋 Facebook、Instagram、官網等平台。<strong style="color:var(--gold)">頁面載入後立即搜索，每 30 分鐘自動更新一次。</strong></p>
+
+        <!-- 台灣國內 -->
+        <div style="margin-bottom:32px">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border)">
+            <div style="display:flex;align-items:center;gap:10px">
+              <div style="font-size:13px;font-weight:600;color:var(--gold);letter-spacing:1.5px;border-left:3px solid var(--gold);padding-left:10px">🇹🇼 台灣國內活動</div>
+              <span style="font-size:11px;background:rgba(184,150,78,.12);color:var(--gold);padding:2px 8px;border-radius:2px;letter-spacing:1px">TAIWAN</span>
+            </div>
+            <button onclick="fetchEvents(true)" style="display:inline-flex;align-items:center;gap:4px;background:transparent;border:.5px solid var(--border2);color:var(--ink3);padding:5px 10px;font-size:11px;cursor:pointer;border-radius:2px;font-family:inherit;transition:all .2s" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--ink3)'">
+              <i class="ti ti-refresh" style="font-size:12px"></i> 重新搜尋
+            </button>
+          </div>
+          <div id="ev-tw-list">
+            <div class="ev-loading"><span></span><span></span><span></span> 正在搜索台灣最新活動…</div>
+          </div>
+        </div>
+
+        <!-- 國際分隔 -->
+        <div style="margin-bottom:32px">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid rgba(26,78,122,.3)">
+            <div style="display:flex;align-items:center;gap:10px">
+              <div style="font-size:13px;font-weight:600;color:var(--blue);letter-spacing:1.5px;border-left:3px solid var(--blue);padding-left:10px">🌍 國際活動</div>
+              <span style="font-size:11px;background:rgba(26,78,122,.12);color:var(--blue);padding:2px 8px;border-radius:2px;letter-spacing:1px">INTERNATIONAL</span>
+            </div>
+            <div style="font-size:11px;color:rgba(26,78,122,.6);letter-spacing:.5px">含坎城、柏林、威尼斯等國際賽事</div>
+          </div>
+          <div id="ev-intl-list">
+            <div class="ev-loading"><span></span><span></span><span></span> 正在搜索國際最新活動…</div>
+          </div>
+        </div>
+      </div><!-- /view-events -->
+
+      <!-- VIEW: NEWS -->
+      <div id="view-news" style="display:none;padding-top:20px">
+        <div class="sec-label">NEWS · 最新動態</div>
+        <div class="sec-title">📰 影視傳播最新消息</div>
+        <div id="news-list">
+          <div class="news-item">
+            <div class="news-num">01</div>
+            <div>
+              <div class="news-cat cat-film">台北電影獎</div>
+              <div class="news-title">《大濛》以13項入圍稱冠 2026台北電影獎名單5月15日正式公布</div>
+              <div class="news-meta"><span>2026.05.15</span><span>·</span><span>最佳攝影入圍：王金城、余靜萍、陳麒文等</span></div>
+            </div>
+          </div>
+          <div class="news-item">
+            <div class="news-num">02</div>
+            <div>
+              <div class="news-cat cat-film">金馬獎</div>
+              <div class="news-title">第62屆金馬獎張震、范冰冰分獲影帝影后　最佳攝影由Leung Ming Kai《地母》奪得</div>
+              <div class="news-meta"><span>2025.11.22</span><span>·</span><span>goldenhorse.org.tw</span></div>
+            </div>
+          </div>
+          <div class="news-item">
+            <div class="news-num">03</div>
+            <div>
+              <div class="news-cat cat-doc">紀錄片</div>
+              <div class="news-title">第15屆TIDF台灣國際紀錄片影展開幕 入圍逾百國作品</div>
+              <div class="news-meta"><span>2026.05</span><span>·</span><span>tidf.org.tw</span></div>
+            </div>
+          </div>
+          <div class="news-item">
+            <div class="news-num">04</div>
+            <div>
+              <div class="news-cat cat-tv">金鐘獎</div>
+              <div class="news-title">第61屆金鐘獎報名辦法預計2026年下半年公布　廣電三類典禮分開舉辦</div>
+              <div class="news-meta"><span>2026.04</span><span>·</span><span>bamid.gov.tw</span></div>
+            </div>
+          </div>
+          <div class="news-item">
+            <div class="news-num">05</div>
+            <div>
+              <div class="news-cat cat-music">金曲獎</div>
+              <div class="news-title">第37屆金曲獎入圍名單即將公布　多元語別創作持續受到重視</div>
+              <div class="news-meta"><span>2026.05</span><span>·</span><span>流行音樂</span></div>
+            </div>
+          </div>
+          <div class="news-item">
+            <div class="news-num">06</div>
+            <div>
+              <div class="news-cat cat-photo">攝影競賽</div>
+              <div class="news-title">2026賞金獵人攝影比賽多項賽事持續開放報名　涵蓋風景人像紀實多類</div>
+              <div class="news-meta"><span>2026.05</span><span>·</span><span>photoawards.tw</span></div>
+            </div>
+          </div>
+          <div class="news-item">
+            <div class="news-num">07</div>
+            <div>
+              <div class="news-cat cat-film">金穗獎</div>
+              <div class="news-title">第48屆金穗獎頒獎典禮完滿落幕　動畫片《落雺》勇奪金穗大獎</div>
+              <div class="news-meta"><span>2026.05</span><span>·</span><span>ghsa.org.tw</span></div>
+            </div>
+          </div>
+        </div>
+      </div><!-- /view-news -->
+
+    </div>
+  </div><!-- /main -->
+
+  <!-- SIDEBAR (desktop) -->
+  <div class="side">
+
+    <!-- AI ASSISTANT -->
+    <div class="side-block">
+      <div class="side-label">AI 賽事助手 · 即時搜尋</div>
+      <div class="ai-panel" id="ai-panel-desktop">
+        <div class="ai-header">
+          <div class="ai-avatar"><i class="ti ti-sparkles ai-avatar-icon"></i></div>
+          <div class="ai-hinfo">
+            <div class="ai-hname">影視 AI 助手 <span class="ai-search-badge">WEB SEARCH</span></div>
+            <div class="ai-hsub">FILM · MEDIA · BROADCASTING</div>
+          </div>
+          <div class="ai-status"><span class="ai-status-dot"></span>線上</div>
+        </div>
+
+        <div class="ai-msgs" id="msgs">
+          <div class="msg ai">
+            <div class="msg-ico"><i class="ti ti-sparkles"></i></div>
+            <div class="msg-bubble">嗨！我是影視傳播 AI 助手 👋 已連接即時網路搜尋，可以幫你找最新的報名資訊、截止日期、入圍名單。<br><br>問金馬獎、金鐘獎、金曲獎、台北電影獎、TIDF 或其他賽事，我都很樂意幫你查！</div>
+          </div>
+        </div>
+
+        <div class="ai-chips" id="chips">
+          <div class="chip" onclick="askChip(this,'金馬獎第63屆怎麼報名？截止日期？')">金馬獎報名</div>
+          <div class="chip" onclick="askChip(this,'賞金獵人攝影比賽目前有哪些開放中的競賽？')">賞金獵人攝影</div>
+          <div class="chip" onclick="askChip(this,'金穗獎是什麼？第48屆結果如何？')">金穗獎介紹</div>
+          <div class="chip" onclick="askChip(this,'金曲獎今年入圍名單是什麼？')">金曲獎入圍</div>
+          <div class="chip" onclick="askChip(this,'TIDF台灣國際紀錄片影展2026有哪些競賽項目？')">TIDF紀錄片</div>
+          <div class="chip" onclick="askChip(this,'台灣有哪些音樂相關的競賽或獎項？')">音樂類獎項</div>
+        </div>
+
+        <label class="ai-search-toggle">
+          <input type="checkbox" id="search-toggle" checked>
+          <i class="ti ti-world-search" style="font-size:13px;color:var(--gold)"></i>
+          啟用即時網路搜尋（更準確但稍慢）
+        </label>
+
+        <div class="ai-input-row">
+          <input class="ai-input" id="ainput" placeholder="想問金馬獎、金鐘獎或其他賽事…" onkeydown="if(event.key==='Enter')sendMsg('desktop')">
+          <button class="ai-send" id="sendbtn" onclick="sendMsg('desktop')" aria-label="送出"><i class="ti ti-send"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- COUNTDOWN -->
+    <div class="side-block">
+      <div class="side-label">倒數計時 · COUNTDOWN</div>
+      <div class="cd-card" id="cd-card">
+        <div class="cd-name">台北電影節</div>
+        <div class="cd-sub">TAIPEI FILM FESTIVAL 2026</div>
+        <div class="cd-nums" id="cd-nums">
+          <div class="cd-unit"><span class="cd-n" id="cd-d">--</span><span class="cd-l">天</span></div>
+          <div class="cd-unit"><span class="cd-n" id="cd-h">--</span><span class="cd-l">時</span></div>
+          <div class="cd-unit"><span class="cd-n" id="cd-m">--</span><span class="cd-l">分</span></div>
+          <div class="cd-unit"><span class="cd-n" id="cd-s">--</span><span class="cd-l">秒</span></div>
+        </div>
+        <div class="cd-phase">開幕 2026年6月26日</div>
+      </div>
+    </div>
+
+    <!-- EVENTS -->
+    <div class="side-block">
+      <div class="side-label">近期活動 · EVENTS</div>
+      <div class="ev-item">
+        <div class="ev-date"><span class="ev-m">MAY</span><span class="ev-d">23</span></div>
+        <div class="ev-info"><div class="ev-title">今日 · 2026年5月23日</div><div class="ev-tag">影視傳播資訊持續更新</div></div>
+      </div>
+      <div class="ev-item">
+        <div class="ev-date"><span class="ev-m">JUN</span><span class="ev-d">26</span></div>
+        <div class="ev-info"><div class="ev-title">第28屆台北電影節開幕</div><div class="ev-tag">台北 · 中山堂、光點華山</div></div>
+      </div>
+      <div class="ev-item">
+        <div class="ev-date"><span class="ev-m">JUL</span><span class="ev-d">07</span></div>
+        <div class="ev-info"><div class="ev-title">台北電影節閉幕暨頒獎</div><div class="ev-tag">台北電影獎典禮</div></div>
+      </div>
+      <div class="ev-item">
+        <div class="ev-date"><span class="ev-m">JUN</span><span class="ev-d">預計</span></div>
+        <div class="ev-info"><div class="ev-title">第37屆金曲獎頒獎典禮</div><div class="ev-tag">台北 · 年度音樂盛典</div></div>
+      </div>
+      <div class="ev-item">
+        <div class="ev-date"><span class="ev-m">NOV</span><span class="ev-d">22</span></div>
+        <div class="ev-info"><div class="ev-title">第63屆金馬獎頒獎典禮（預計）</div><div class="ev-tag">台北 · goldenhorse.org.tw</div></div>
+      </div>
+      <div class="ev-item">
+        <div class="ev-date"><span class="ev-m">OCT</span><span class="ev-d">中</span></div>
+        <div class="ev-info"><div class="ev-title">2026高雄電影節（預計）</div><div class="ev-tag">高雄 · kff.tw</div></div>
+      </div>
+      <div class="ev-item">
+        <div class="ev-date"><span class="ev-m">秋季</span><span class="ev-d">TBD</span></div>
+        <div class="ev-info"><div class="ev-title">第61屆金鐘獎典禮</div><div class="ev-tag">廣電三類 · bamid.gov.tw</div></div>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="side-block">
+      <div class="side-label">本頁統計 · STATS</div>
+      <div class="stat-grid">
+        <div class="stat-box" style="border-top:2px solid var(--gold)">
+          <div class="stat-n">14</div><div class="stat-l">賽事條目</div>
+        </div>
+        <div class="stat-box" style="border-top:2px solid var(--teal)">
+          <div class="stat-n">7</div><div class="stat-l">近期活動</div>
+        </div>
+        <div class="stat-box" style="border-top:2px solid var(--red)">
+          <div class="stat-n">7</div><div class="stat-l">最新動態</div>
+        </div>
+        <div class="stat-box" style="border-top:2px solid var(--purple)">
+          <div class="stat-n" style="font-size:16px">AI搜</div><div class="stat-l">即時查詢</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /side -->
+</div><!-- /wrap -->
+
+<!-- MOBILE FAB -->
+<button class="fab-ai" onclick="toggleDrawer()" aria-label="開啟AI助手">
+  <i class="ti ti-sparkles"></i>
+</button>
+
+<!-- MOBILE AI DRAWER -->
+<div class="ai-drawer" id="ai-drawer">
+  <div class="drawer-drag" onclick="toggleDrawer()"></div>
+  <div class="ai-header">
+    <div class="ai-avatar"><i class="ti ti-sparkles ai-avatar-icon"></i></div>
+    <div class="ai-hinfo">
+      <div class="ai-hname">影視 AI 助手 <span class="ai-search-badge">WEB SEARCH</span></div>
+      <div class="ai-hsub">即時搜尋 · 賽事諮詢</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <div class="ai-status"><span class="ai-status-dot"></span>線上</div>
+      <i class="ti ti-x" style="color:rgba(184,150,78,.5);cursor:pointer;font-size:18px" onclick="toggleDrawer()"></i>
+    </div>
+  </div>
+  <div class="ai-msgs" id="msgs-mobile">
+    <div class="msg ai">
+      <div class="msg-ico"><i class="ti ti-sparkles"></i></div>
+      <div class="msg-bubble">嗨！有任何影視、廣電、攝影、音樂賽事的問題，直接問我就好，我會幫你即時搜尋最新資訊 🎬</div>
+    </div>
+  </div>
+  <div class="ai-chips">
+    <div class="chip" onclick="askChipMobile(this,'金馬獎怎麼報名？')">金馬獎</div>
+    <div class="chip" onclick="askChipMobile(this,'賞金獵人攝影比賽有哪些？')">賞金獵人</div>
+    <div class="chip" onclick="askChipMobile(this,'金曲獎今年入圍名單')">金曲獎</div>
+    <div class="chip" onclick="askChipMobile(this,'金穗獎是什麼？第48屆結果？')">金穗獎</div>
+  </div>
+  <label class="ai-search-toggle">
+    <input type="checkbox" id="search-toggle-mobile" checked>
+    <i class="ti ti-world-search" style="font-size:13px;color:var(--gold)"></i>
+    啟用即時網路搜尋
+  </label>
+  <div class="ai-input-row">
+    <input class="ai-input" id="ainput-mobile" placeholder="詢問賽事資訊…" onkeydown="if(event.key==='Enter')sendMsg('mobile')">
+    <button class="ai-send" id="sendbtn-mobile" onclick="sendMsg('mobile')" aria-label="送出"><i class="ti ti-send"></i></button>
+  </div>
+</div>
+
+<!-- MOBILE BOTTOM NAV -->
+<div class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <div class="bnav-item on" onclick="scrollToTop()">
+      <i class="ti ti-home"></i>
+      <span>首頁</span>
+    </div>
+    <div class="bnav-item" onclick="filterCards(null,'film')">
+      <i class="ti ti-movie"></i>
+      <span>電影</span>
+    </div>
+    <div class="bnav-item" onclick="filterCards(null,'tv')">
+      <i class="ti ti-antenna-bars-5"></i>
+      <span>廣電</span>
+    </div>
+    <div class="bnav-item" onclick="filterCards(null,'photo')">
+      <i class="ti ti-camera"></i>
+      <span>攝影</span>
+    </div>
+    <div class="bnav-item" onclick="toggleDrawer()">
+      <i class="ti ti-sparkles"></i>
+      <span>AI搜尋</span>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── DATE ──
+const d=new Date();
+document.getElementById('now').textContent=`${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')}`;
+
+// ── COUNTDOWN ──
+function updateCountdown(){
+  const target=new Date('2026-06-26T10:00:00');
+  const now=new Date();
+  const diff=target-now;
+  if(diff<=0){document.getElementById('cd-nums').innerHTML='<div class="cd-unit" style="grid-column:1/-1"><span class="cd-n" style="font-size:14px">影展進行中</span></div>';return;}
+  const days=Math.floor(diff/86400000);
+  const hours=Math.floor((diff%86400000)/3600000);
+  const mins=Math.floor((diff%3600000)/60000);
+  const secs=Math.floor((diff%60000)/1000);
+  document.getElementById('cd-d').textContent=String(days).padStart(2,'0');
+  document.getElementById('cd-h').textContent=String(hours).padStart(2,'0');
+  document.getElementById('cd-m').textContent=String(mins).padStart(2,'0');
+  document.getElementById('cd-s').textContent=String(secs).padStart(2,'0');
+}
+updateCountdown();
+setInterval(updateCountdown,1000);
+
+// ── VIEW SWITCHER ──
+function switchView(view, cat, el){
+  // Update nav highlight
+  document.querySelectorAll('.nav a').forEach(a=>a.classList.remove('on'));
+  if(el) el.classList.add('on');
+
+  // Show/hide views
+  document.getElementById('view-contests').style.display = view==='contests' ? '' : 'none';
+  document.getElementById('view-events').style.display   = view==='events'   ? '' : 'none';
+  document.getElementById('view-news').style.display     = view==='news'     ? '' : 'none';
+
+  // If contests view, also apply category filter
+  if(view==='contests'){
+    filterCards(null, cat);
+    // sync the ftab buttons
+    document.querySelectorAll('.ftab').forEach(t=>t.classList.remove('on'));
+    document.querySelectorAll('.ftab').forEach(t=>{if(t.dataset.cat===cat)t.classList.add('on');});
+  }
+}
+
+// ── NAV ──
+document.querySelectorAll('.nav a').forEach(a=>{
+  a.addEventListener('click',()=>{
+    document.querySelectorAll('.nav a').forEach(x=>x.classList.remove('on'));
+    a.classList.add('on');
+  });
+});
+
+// ── FILTER ──
+function filterCards(btn,cat){
+  document.querySelectorAll('.ftab').forEach(t=>t.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+  else{
+    document.querySelectorAll('.ftab').forEach(t=>{if(t.dataset.cat===cat)t.classList.add('on');});
+  }
+  document.querySelectorAll('.ccard').forEach(c=>{
+    if(cat==='all'||c.dataset.cat.includes(cat)){
+      c.style.display='';
+    }else{
+      c.style.display='none';
+    }
+  });
+}
+
+// ── MOBILE SEARCH ──
+function mobileSearch(){
+  const q=document.getElementById('msearch').value.trim();
+  if(!q)return;
+  document.getElementById('msearch').value='';
+  openDrawer();
+  setTimeout(()=>{
+    document.getElementById('ainput-mobile').value=q;
+    sendMsg('mobile');
+  },350);
+}
+
+// ── DRAWER ──
+let drawerOpen=false;
+function toggleDrawer(){drawerOpen?closeDrawer():openDrawer();}
+function openDrawer(){drawerOpen=true;document.getElementById('ai-drawer').classList.add('open');document.getElementById('fab-ai') && (document.querySelector('.fab-ai').style.display='none');}
+function closeDrawer(){drawerOpen=false;document.getElementById('ai-drawer').classList.remove('open');document.querySelector('.fab-ai').style.display='flex';}
+
+// ── SCROLL ──
+function scrollToTop(){window.scrollTo({top:0,behavior:'smooth'});}
+
+// ── AI SYSTEM PROMPT ──
+const SYSTEM=`你是「影視傳播賽事資訊平台」的 AI 助手，專精台灣及華語影視廣電圈的各類賽事資訊。你已連接即時網路搜尋工具，會主動搜尋最新的報名日期、得獎名單、影展資訊。
+
+涵蓋範疇：
+【電影】金馬獎、台北電影獎（台北電影節）、金穗獎（短片/新銳）、南方影展、高雄電影節、TIDF台灣國際紀錄片影展
+【廣播電視】金鐘獎、卓越新聞獎
+【攝影影像】賞金獵人攝影比賽、台灣攝影獎、新聞攝影大賽
+【音樂】金曲獎、金音創作獎、客家音樂相關競賽
+【其他廣電】原住民族廣播電視、客家影視音徵選
+
+重要注意：「金瑞獎」並不存在，請勿提及。正確的短片獎是「金穗獎」（ghsa.org.tw）。
+
+回答原則：
+1. 若搜尋結果有最新資訊，優先使用搜尋結果，並說明資訊來源
+2. 提供具體的截止日期、報名資格、獎項類別、獎金金額（已知情況）
+3. 提供官方網站連結
+4. 若資訊可能已過期，提醒使用者至官網確認
+5. 語言使用繁體中文，語氣親切專業
+6. 絕對不能捏造不存在的獎項或活動
+
+已知重要資訊（2026年5月為準）：
+- 第63屆金馬獎：短片類預計6月開放報名、長片7月、典禮11/22（預計），官網goldenhorse.org.tw
+- 第28屆台北電影獎：5/15公布入圍名單，影展6/26-7/07，官網taipeiff.taipei
+- 第61屆金鐘獎：2026年秋季預計舉辦，官網bamid.gov.tw
+- 第48屆金穗獎：2026年已結束，短片新銳競賽，官網ghsa.org.tw
+- TIDF第15屆：2026年5月進行中，官網tidf.org.tw
+- 金曲獎：每年6月典禮，官網bamid.gov.tw
+- 金音創作獎：文化部主辦，鼓勵獨立音樂`;
+
+const msgs_desktop=[];
+const msgs_mobile=[];
+let busy_desktop=false;
+let busy_mobile=false;
+
+async function callAI(userMsg,context){
+  const msgs=context==='desktop'?msgs_desktop:msgs_mobile;
+  const useSearch=document.getElementById(context==='desktop'?'search-toggle':'search-toggle-mobile').checked;
+
+  msgs.push({role:'user',content:userMsg});
+
+  const body={
+    model:'claude-sonnet-4-20250514',
+    max_tokens:700,
+    system:SYSTEM,
+    messages:msgs
+  };
+
+  if(useSearch){
+    body.tools=[{type:'web_search_20250305',name:'web_search'}];
+  }
+
+  const res=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(body)
+  });
+  const data=await res.json();
+
+  // Extract text from content blocks (handles tool use + text blocks)
+  let reply='';
+  let usedSearch=false;
+  if(data.content&&Array.isArray(data.content)){
+    for(const block of data.content){
+      if(block.type==='text')reply+=block.text;
+      if(block.type==='tool_use'&&block.name==='web_search')usedSearch=true;
+      if(block.type==='tool_result')usedSearch=true;
+    }
+  }
+  if(!reply)reply='抱歉，目前無法取得回應，請稍後再試。';
+  msgs.push({role:'assistant',content:reply});
+  return {reply,usedSearch};
+}
+
+function addBubble(text,role,msgsId,searchUsed){
+  const box=document.getElementById(msgsId);
+  if(!box)return;
+  const wrap=document.createElement('div');
+  wrap.className='msg '+role;
+  const ico=document.createElement('div');
+  ico.className='msg-ico';
+  ico.innerHTML=role==='ai'?'<i class="ti ti-sparkles"></i>':'<i class="ti ti-user"></i>';
+  const bub=document.createElement('div');
+  bub.className='msg-bubble';
+  bub.textContent=text;
+  if(role==='ai'&&searchUsed){
+    const note=document.createElement('div');
+    note.className='msg-search-note';
+    note.innerHTML='<i class="ti ti-world-search" style="font-size:11px"></i> 已搜尋即時網路資料';
+    bub.appendChild(note);
+  }
+  wrap.appendChild(ico);
+  wrap.appendChild(bub);
+  box.appendChild(wrap);
+  box.scrollTop=box.scrollHeight;
+}
+
+function addTyping(msgsId){
+  const box=document.getElementById(msgsId);
+  if(!box)return;
+  const wrap=document.createElement('div');
+  wrap.className='msg ai';
+  wrap.id='typing-wrap-'+msgsId;
+  const ico=document.createElement('div');ico.className='msg-ico';ico.innerHTML='<i class="ti ti-sparkles"></i>';
+  const bub=document.createElement('div');bub.className='msg-bubble';
+  bub.innerHTML='<div class="typing"><span></span><span></span><span></span></div>';
+  wrap.appendChild(ico);wrap.appendChild(bub);
+  box.appendChild(wrap);box.scrollTop=box.scrollHeight;
+}
+
+function removeTyping(msgsId){
+  const t=document.getElementById('typing-wrap-'+msgsId);
+  if(t)t.remove();
+}
+
+async function sendMsg(context){
+  const isMobile=context==='mobile';
+  if(isMobile&&busy_mobile)return;
+  if(!isMobile&&busy_desktop)return;
+  const inp=document.getElementById(isMobile?'ainput-mobile':'ainput');
+  const btn=document.getElementById(isMobile?'sendbtn-mobile':'sendbtn');
+  const msgsId=isMobile?'msgs-mobile':'msgs';
+  const txt=inp.value.trim();
+  if(!txt)return;
+  inp.value='';
+  if(isMobile)busy_mobile=true;else busy_desktop=true;
+  btn.disabled=true;
+  addBubble(txt,'user',msgsId,false);
+  addTyping(msgsId);
+  try{
+    const {reply,usedSearch}=await callAI(txt,context);
+    removeTyping(msgsId);
+    addBubble(reply,'ai',msgsId,usedSearch);
+  }catch(e){
+    removeTyping(msgsId);
+    addBubble('連線發生問題，請稍後再試。','ai',msgsId,false);
+  }
+  if(isMobile)busy_mobile=false;else busy_desktop=false;
+  btn.disabled=false;
+}
+
+function askChip(el,q){
+  if(busy_desktop)return;
+  document.getElementById('ainput').value=q;
+  el.style.opacity='.4';
+  setTimeout(()=>el.style.opacity='1',900);
+  sendMsg('desktop');
+}
+
+function askChipMobile(el,q){
+  if(busy_mobile)return;
+  document.getElementById('ainput-mobile').value=q;
+  el.style.opacity='.4';
+  setTimeout(()=>el.style.opacity='1',900);
+  sendMsg('mobile');
+}
+
+// ── EVENTS AUTO-SEARCH ──
+let evFetching = false;
+let evLastFetchTime = null;
+let evAutoInterval = null;
+const EV_INTERVAL_MS = 30 * 60 * 1000; // 30 minutes
+
+async function fetchEvents(manual = false){
+  if(evFetching) return;
+  evFetching = true;
+
+  const btn = document.getElementById('ev-refresh-btn');
+  const lastUpdate = document.getElementById('ev-last-update');
+  const nextUpdate = document.getElementById('ev-next-update');
+
+  if(btn){
+    btn.disabled = true;
+    btn.innerHTML = '<i class="ti ti-loader-2" style="animation:spin .8s linear infinite"></i> 搜索中…';
+  }
+  if(lastUpdate) lastUpdate.textContent = '搜索中…';
+  if(nextUpdate) nextUpdate.textContent = '';
+
+  document.getElementById('ev-tw-list').innerHTML = '<div class="ev-loading"><span></span><span></span><span></span> 正在搜索台灣最新活動（FB・IG・官網）…</div>';
+  document.getElementById('ev-intl-list').innerHTML = '<div class="ev-loading"><span></span><span></span><span></span> 正在搜索國際最新活動…</div>';
+
+  const today = new Date();
+  const dateStr = `${today.getFullYear()}年${today.getMonth()+1}月${today.getDate()}日`;
+
+  const EV_SYSTEM = `你是影視傳播活動資訊助手。今天是${dateStr}。請用繁體中文回應，必須只回傳 JSON，不要有任何前言或 markdown。
+
+你需要搜索近期（現在到未來6個月）所有跟影視、電影、廣電、攝影、音樂相關的活動、影展、競賽、頒獎典禮。
+搜索來源應包含：Facebook粉絲頁公告、Instagram、各官方網站、文化部網站、bamid.gov.tw、goldenhorse.org.tw、tidf.org.tw 等。
+台灣本地活動 和 國際活動 必須嚴格分開，不可混合。
+
+回傳格式：
+{
+  "taiwan": [
+    {
+      "title": "活動名稱",
+      "date": "日期（如 2026/06/26）",
+      "location": "地點",
+      "desc": "簡短說明（2句話內）",
+      "source": "資料來源（如官網URL、FB粉絲頁名稱）",
+      "type": "影展/競賽/典禮/徵件"
+    }
+  ],
+  "international": [
+    {
+      "title": "活動名稱",
+      "country": "國家",
+      "date": "日期",
+      "location": "城市，國家",
+      "desc": "簡短說明",
+      "source": "來源",
+      "type": "影展/競賽/典禮"
+    }
+  ]
+}
+
+台灣請搜索：金馬獎、台北電影獎、金鐘獎、金曲獎、金穗獎、高雄電影節、南方影展、TIDF、金音創作獎、原住民族廣電相關活動。
+國際請搜索：坎城影展、威尼斯影展、柏林影展、多倫多影展、聖丹斯影展、釜山影展、香港國際電影節、翠貝卡影展，以及重要國際攝影音樂競賽。
+台灣最多10筆，國際最多10筆。確保所有資訊都是真實可查的，不要捏造。`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 2500,
+        system: EV_SYSTEM,
+        messages: [{role:'user', content:`請立即搜索${dateStr}前後的台灣及國際影視傳播相關活動（包含FB、IG、官網最新公告），回傳JSON格式。`}],
+        tools: [{type:'web_search_20250305', name:'web_search'}]
+      })
+    });
+    const data = await res.json();
+
+    let raw = '';
+    for(const block of (data.content||[])){
+      if(block.type==='text') raw += block.text;
+    }
+
+    let parsed;
+    try {
+      const match = raw.match(/\{[\s\S]*\}/);
+      if(!match) throw new Error('no json');
+      parsed = JSON.parse(match[0]);
+    } catch(e) {
+      throw new Error('JSON解析失敗');
+    }
+
+    renderEvCards('ev-tw-list', parsed.taiwan||[], 'tw');
+    renderEvCards('ev-intl-list', parsed.international||[], 'intl');
+
+    evLastFetchTime = new Date();
+    const hh = String(evLastFetchTime.getHours()).padStart(2,'0');
+    const mm = String(evLastFetchTime.getMinutes()).padStart(2,'0');
+    if(lastUpdate) lastUpdate.textContent = `最後更新：${hh}:${mm}`;
+    scheduleNextUpdate();
+
+  } catch(e) {
+    document.getElementById('ev-tw-list').innerHTML = `<div class="ev-error">⚠️ 搜索失敗，請點「即時重新搜尋」重試。<br><small style="opacity:.6">${e.message}</small></div>`;
+    document.getElementById('ev-intl-list').innerHTML = `<div class="ev-error">⚠️ 搜索失敗，請點「即時重新搜尋」重試。</div>`;
+    if(lastUpdate) lastUpdate.textContent = '搜索失敗';
+  }
+
+  if(btn){
+    btn.disabled = false;
+    btn.innerHTML = '<i class="ti ti-refresh"></i> 即時重新搜尋';
+  }
+  evFetching = false;
+}
+
+function scheduleNextUpdate(){
+  if(evAutoInterval) clearInterval(evAutoInterval);
+  // Update countdown display every minute
+  const nextUpdate = document.getElementById('ev-next-update');
+  let remaining = EV_INTERVAL_MS;
+  const tick = () => {
+    remaining -= 60000;
+    if(remaining <= 0){
+      if(nextUpdate) nextUpdate.textContent = '自動更新中…';
+    } else {
+      const mins = Math.round(remaining / 60000);
+      if(nextUpdate) nextUpdate.textContent = `${mins} 分鐘後自動更新`;
+    }
+  };
+  const countdownInterval = setInterval(tick, 60000);
+  if(nextUpdate) nextUpdate.textContent = `30 分鐘後自動更新`;
+
+  evAutoInterval = setTimeout(() => {
+    clearInterval(countdownInterval);
+    fetchEvents();
+  }, EV_INTERVAL_MS);
+}
+
+function renderEvCards(containerId, items, type){
+  const container = document.getElementById(containerId);
+  if(!items || items.length === 0){
+    container.innerHTML = '<div style="font-size:13px;color:var(--ink3);padding:16px 0">目前無搜索到活動資訊，請稍後刷新。</div>';
+    return;
+  }
+  const colors = {
+    '影展': '#0A6060', '競賽': '#943214', '典禮': '#B8964E',
+    '徵件': '#5A3F9A', '頒獎': '#B8964E'
+  };
+  const grid = document.createElement('div');
+  grid.className = 'aiev-grid';
+  items.forEach(ev => {
+    const color = colors[ev.type] || '#B8964E';
+    const badgeClass = type === 'tw' ? 'tw' : 'intl';
+    // For international: show country badge
+    const countryBadge = (type === 'intl' && ev.country)
+      ? `<span style="display:inline-flex;align-items:center;font-size:10px;background:rgba(26,78,122,.15);color:var(--blue);padding:2px 7px;border-radius:2px;margin-left:5px;letter-spacing:.5px">${ev.country}</span>`
+      : '';
+    const card = document.createElement('div');
+    card.className = 'aiev-card';
+    card.innerHTML = `
+      <div class="aiev-card-bar" style="background:${color}"></div>
+      <div style="padding-left:10px">
+        <div style="display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:8px">
+          <div class="aiev-badge ${badgeClass}" style="margin-bottom:0"><span style="width:5px;height:5px;border-radius:50%;background:currentColor;display:inline-block"></span>${ev.type||'活動'}</div>
+          ${countryBadge}
+        </div>
+        <div class="aiev-title">${ev.title||''}</div>
+        <div class="aiev-desc">${ev.desc||''}</div>
+        <div class="aiev-footer">
+          <div class="aiev-date"><i class="ti ti-calendar" style="font-size:12px"></i> ${ev.date||'日期待定'}</div>
+          <div class="aiev-loc"><i class="ti ti-map-pin" style="font-size:12px"></i> ${ev.location||''}</div>
+        </div>
+        <div class="aiev-src"><i class="ti ti-link" style="font-size:11px"></i> ${ev.source||''}</div>
+      </div>`;
+    grid.appendChild(card);
+  });
+  container.innerHTML = '';
+  container.appendChild(grid);
+}
+
+// ── AUTO-FETCH ON PAGE LOAD (immediately) ──
+fetchEvents();
+
+// Auto-fetch when events tab is opened (if data is stale > 30min or not yet loaded)
+const _origSwitchView = switchView;
+function switchView(view, cat, el){
+  _origSwitchView(view, cat, el);
+  if(view === 'events'){
+    const stale = !evLastFetchTime || (Date.now() - evLastFetchTime > EV_INTERVAL_MS);
+    if(stale && !evFetching) fetchEvents();
+  }
+}
+
+// Add spin keyframe
+const spinStyle = document.createElement('style');
+spinStyle.textContent = '@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}';
+document.head.appendChild(spinStyle);
+
+// Close drawer on outside click
+document.addEventListener('click',function(e){
+  if(drawerOpen&&!document.getElementById('ai-drawer').contains(e.target)&&!document.querySelector('.fab-ai').contains(e.target)){
+    closeDrawer();
+  }
+});
+</script>
+</body>
+</html>
